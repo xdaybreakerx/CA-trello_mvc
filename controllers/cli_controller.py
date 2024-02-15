@@ -1,6 +1,10 @@
+from datetime import date
+
 from flask import Blueprint
+
 from init import db, bcrypt
 from models.user import User
+from models.card import Card
 
 db_commands = Blueprint('db', __name__)
 
@@ -28,7 +32,46 @@ def seed_tables():
             password = bcrypt.generate_password_hash('123456').decode('utf-8')
         )
     ]
+    
     db.session.add_all(users)
+    
+    cards = [
+        Card(
+            title = "Card 1",
+            description = "Card 1 Description",
+            date = date.today(),
+            status = "To Do",
+            priority = "High",
+            user = users[0]
+        ),
+        Card(
+            title = "Card 2",
+            description = "Card 2 Description",
+            date = date.today(),
+            status = "Ongoing",
+            priority = "High",
+            user = users[0]
+        ),
+        Card(
+            title = "Card 3",
+            description = "Card 3 Description",
+            date = date.today(),
+            status = "Ongoing",
+            priority = "Medium",
+            user = users[1]
+        ),
+        Card(
+            title = "Card 4",
+            description = "Card 4 Description",
+            date = date.today(),
+            status = "Done",
+            priority = "Low",
+            user = users[1]
+        )                 
+    ]
+    
+    db.session.add_all(cards)
+    
     db.session.commit()
     
     print("Tables seeded")
