@@ -2,17 +2,19 @@ from init import db, ma
 
 from marshmallow import fields
 
+
 class User(db.Model):
     __tablename__ = "users"
-    
-    id = db.Column(db.Integer, primary_key = True)
+
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    email = db.Column(db.String, nullable = False, unique = True)
-    password = db.Column(db.String, nullable = False)
-    is_admin = db.Column(db.Boolean, default = False)
-    
-    cards = db.relationship('Card', back_populates='user', cascade = 'all, delete')
-    
+    email = db.Column(db.String, nullable=False, unique=True)
+    password = db.Column(db.String, nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
+    cards = db.relationship("Card", back_populates="user", cascade="all, delete")
+    comments = db.relationship("Comment", back_populates="user", cascade="all, delete")
+
     # {id: 1, name: User 1, email: user1@email.com}
     # {
     #   id: 1,
@@ -24,13 +26,16 @@ class User(db.Model):
     #       {id: 7, title: Card 7}
     #   ]
     # }
-    
+
+
 class UserSchema(ma.Schema):
-    
-    cards = fields.List(fields.Nested('CardSchema', exclude=['user']))
-    
+
+    cards = fields.List(fields.Nested("CardSchema", exclude=["user"]))
+    comments = fields.list(fields.Nested("CommentSchema", exclude=["user"]))
+
     class Meta:
-        fields = ('id', 'name', 'email', 'password', 'is_admin')
-        
-user_schema = UserSchema(exclude=['password'])
-users_schema = UserSchema(many=True, exclude=['password'])       
+        fields = ("id", "name", "email", "password", "is_admin", "cards", "comments")
+
+
+user_schema = UserSchema(exclude=["password"])
+users_schema = UserSchema(many=True, exclude=["password"])
