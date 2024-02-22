@@ -31,7 +31,7 @@ class Card(db.Model):
     # }
 
     comments = db.relationship(
-        "Comment", back_populates="card"
+        "Comment", back_populates="card", cascade='all, delete'
         )
 
 
